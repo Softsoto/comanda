@@ -1,4 +1,16 @@
 <p align="center">
+  <img src="docs/images/homenaje.png" alt="Un homenaje a Natha" width="100%">
+</p>
+
+<blockquote align="center">
+  <b>Para Natha 💛</b><br>
+  Una de las personas más hermosas que me dejó el 2026.<br>
+  Gracias por existir y por ser la inspiración de que este proyecto sea <b>libre y gratis</b>, para que ayude a mucha gente.
+</blockquote>
+
+<hr>
+
+<p align="center">
   <img src="docs/images/banner.png" alt="Comanda" width="100%">
 </p>
 
