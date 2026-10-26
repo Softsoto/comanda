@@ -4,9 +4,13 @@
 
 <blockquote align="center">
   <b>Para Natha 💛</b><br>
-  Una de las personas más hermosas que me dejó el 2026.<br>
-  Gracias por existir y por ser la inspiración de que este proyecto sea <b>libre y gratis</b>, para que ayude a mucha gente.
+  Hay personas que, sin proponérselo, te hacen querer crear cosas buenas. Tú eres una de ellas.<br>
+  Gracias por inspirar que <b>comanda</b> sea libre y gratis, y por recordarme lo bonito de cuidar a los demás. 🌙
 </blockquote>
+
+<p align="center">
+  🐾 <b>Adopta, no compres.</b> Hay muchos animalitos esperando un hogar; dale una oportunidad a quien más lo necesita.
+</p>
 
 <hr>
 
