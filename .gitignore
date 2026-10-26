@@ -1,0 +1,63 @@
+﻿# dependencias
+/node_modules
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# base de datos local y copias de seguridad
+/data/
+/copias/
+
+# variables de entorno (la plantilla .env.example sÃ­ se guarda)
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# varios
+.DS_Store
+npm-debug.log*
+# --- Build / dependencias ---
+bin/
+obj/
+.vs/
+*.user
+node_modules/
+dist/
+publish/
+TestResults/
+__pycache__/
+*.pyc
+
+# --- Instaladores y binarios pesados (van como Releases) ---
+*.exe
+*.msi
+*.zip
+*.7z
+
+# --- Secretos y datos locales (NUNCA subir) ---
+.env
+.env.*
+*.pem
+*.pfx
+*.p12
+*.key
+*.snk
+secrets*.json
+credentials*.json
+token*.json
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.log
+
+# --- SO / editores ---
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/

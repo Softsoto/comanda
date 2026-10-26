@@ -1,0 +1,39 @@
+# Comanda en Docker (por ejemplo, en un NAS Synology con Container Manager).
+# Guía paso a paso: docs/synology.md
+#
+# Antes de crear el proyecto:
+#   - Crea las carpetas "data" y "copias" junto a este archivo.
+#   - Cambia los valores marcados con  <-- CAMBIA ESTO.
+services:
+  comanda:
+    build: .
+    image: comanda:local
+    container_name: comanda
+    restart: unless-stopped
+    ports:
+      - "3000:3000"            # puerto del NAS : puerto de la app
+    environment:
+      TZ: America/Bogota
+      # La dirección pública con la que se abre la app (la del túnel o tu dominio).
+      APP_URL: "https://menu.tudominio.com"          # <-- CAMBIA ESTO
+      # Tu correo de administrador (regístralo primero en la app y luego ponlo aquí).
+      ADMIN_EMAILS: "tucorreo@ejemplo.com"            # <-- CAMBIA ESTO
+      # Copias automáticas: cada cuántas horas y cuántas se guardan.
+      COPIAS_CADA_HORAS: "24"
+      COPIAS_GUARDAR: "14"
+    volumes:
+      - ./data:/app/data       # la base de datos (no la borres)
+      - ./copias:/app/copias   # copias de seguridad (manuales y automáticas)
+
+  # Opcional: publicar la app en internet sin abrir puertos del router, con un
+  # túnel de Cloudflare (necesitas un dominio en Cloudflare; el plan gratis sirve).
+  # Quita los "#" de las líneas de abajo y pega el token del túnel.
+  # tunel:
+  #   image: cloudflare/cloudflared:latest
+  #   container_name: comanda-tunel
+  #   restart: unless-stopped
+  #   command: tunnel --no-autoupdate run
+  #   environment:
+  #     TUNNEL_TOKEN: "pega-aqui-el-token"           # <-- CAMBIA ESTO
+  #   depends_on:
+  #     - comanda

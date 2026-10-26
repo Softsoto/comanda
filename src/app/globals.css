@@ -1,0 +1,427 @@
+@import "tailwindcss";
+
+/*
+ * Sistema de diseño "Comanda".
+ * Móvil primero: una columna con margen lateral de 16px; las tarjetas se
+ * apoyan en un fondo cálido y el verde de marca se reserva para la acción
+ * principal de cada pantalla.
+ *
+ * Todos los colores salen de estas variables. Para cambiar la marca basta
+ * con editar los valores de :root (tema claro) y de los dos bloques oscuros.
+ */
+:root {
+  --surface: #fbf8f3; /* fondo de página */
+  --surface-raised: #ffffff; /* tarjetas, hoja del carrito, campos */
+  --ink: #1c1a17; /* texto principal */
+  --ink-muted: #655f57; /* texto secundario */
+  --line: #8f887d; /* bordes de campos y controles */
+  --brand: #0e7a4b; /* acción principal */
+  --on-brand: #ffffff; /* texto sobre brand */
+  --brand-tint: #ddf3e7; /* categoría activa, avisos de éxito */
+  --accent: #e8590c; /* contador del carrito, distintivos */
+  --on-accent: #1c1a17; /* texto sobre accent */
+  --danger: #b3261e; /* errores y eliminar */
+  --chart-1: #0e7a4b; /* barras de las gráficas */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface: #141311;
+    --surface-raised: #1f1d1a;
+    --ink: #f4efe8;
+    --ink-muted: #b0a99e;
+    --line: #6e685f;
+    --brand: #35c985;
+    --on-brand: #0b2417;
+    --brand-tint: #153526;
+    --accent: #ff8a4c;
+    --on-accent: #141311;
+    --danger: #ff8a80;
+    --chart-1: #27a871;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --surface: #141311;
+  --surface-raised: #1f1d1a;
+  --ink: #f4efe8;
+  --ink-muted: #b0a99e;
+  --line: #6e685f;
+  --brand: #35c985;
+  --on-brand: #0b2417;
+  --brand-tint: #153526;
+  --accent: #ff8a4c;
+  --on-accent: #141311;
+  --danger: #ff8a80;
+  --chart-1: #27a871;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-surface: var(--surface);
+  --color-raised: var(--surface-raised);
+  --color-ink: var(--ink);
+  --color-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-on-brand: var(--on-brand);
+  --color-brand-tint: var(--brand-tint);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-danger: var(--danger);
+  --color-chart: var(--chart-1);
+
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Escala de texto del sistema */
+  --text-display: 2rem;
+  --text-display--line-height: 2.25rem;
+  --text-title: 1.375rem;
+  --text-title--line-height: 1.75rem;
+  --text-price: 1.0625rem;
+  --text-price--line-height: 1.5rem;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.125rem;
+
+  --radius-field: 8px; /* campos y miniaturas */
+  --radius-card: 24px; /* tarjetas y hoja del carrito */
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Evita que la página "salte" de lado al abrir el pedido y bloquear el scroll. */
+  scrollbar-gutter: stable;
+}
+
+body {
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+
+@layer components {
+  /* Botones: siempre en forma de píldora y con al menos 44px de alto */
+  .btn {
+    @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full px-5 text-base font-semibold select-none;
+    @apply transition-[background-color,border-color,opacity] duration-150;
+  }
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    @apply cursor-not-allowed opacity-60;
+  }
+  .btn-primary {
+    @apply bg-brand text-on-brand;
+  }
+  /* Al pasar el cursor, el fondo se acerca al color del texto principal: cambia sin perder contraste con las letras. */
+  .btn-primary:hover:not(:disabled),
+  .brand-hover:hover {
+    background-color: color-mix(in srgb, var(--brand) 86%, var(--ink));
+  }
+  .accent-hover:hover {
+    background-color: color-mix(in srgb, var(--accent) 86%, var(--surface-raised));
+  }
+  .btn-secondary {
+    @apply border border-line bg-raised text-ink hover:border-ink;
+  }
+  .btn-outline-brand {
+    @apply border-2 border-brand bg-transparent text-brand hover:bg-brand-tint;
+  }
+  .btn-danger {
+    @apply border border-danger bg-transparent text-danger hover:bg-danger/10;
+  }
+  .btn-ghost {
+    @apply bg-transparent text-ink hover:bg-ink/5;
+  }
+  .btn-sm {
+    @apply min-h-9 px-4 text-sm;
+  }
+
+  /* Formularios */
+  .field {
+    @apply block min-h-12 w-full rounded-field border border-line bg-raised px-3 py-2.5 text-base text-ink;
+    @apply placeholder:text-muted/70;
+  }
+  .field[aria-invalid="true"] {
+    @apply border-2 border-danger;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-semibold text-ink;
+  }
+  .hint {
+    @apply mt-1.5 text-caption text-muted;
+  }
+  .field-error {
+    @apply mt-1.5 text-sm font-medium text-danger;
+  }
+
+  .card {
+    @apply rounded-card bg-raised p-4;
+  }
+
+  .link {
+    @apply font-semibold text-brand underline decoration-1 underline-offset-4 hover:decoration-2;
+  }
+}
+
+/*
+ * Botón que cubre toda la tarjeta de un producto (abre su ficha). El aro de
+ * foco rodea la tarjeta entera, no solo el nombre.
+ */
+.card-button {
+  cursor: pointer;
+  text-align: left;
+}
+.card-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-card);
+}
+.card-button:focus-visible {
+  outline: none;
+}
+.card-button:focus-visible::after {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Barra de categorías: se desliza con el dedo, sin barra de scroll visible */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hoja del carrito (<dialog>) */
+dialog.sheet {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  /* La hoja no se desplaza: solo su zona central. Así el encabezado y el botón de enviar nunca se salen. */
+  overflow: hidden;
+  background: var(--surface);
+  color: var(--ink);
+}
+dialog.sheet::backdrop {
+  background: rgb(0 0 0 / 0.5);
+}
+@media (min-width: 768px) {
+  dialog.sheet {
+    inset: 0 0 0 auto;
+    width: 460px;
+    box-shadow: -1px 0 0 0 color-mix(in srgb, var(--line) 40%, transparent);
+  }
+}
+
+/* Ficha de producto (<dialog>): sube desde abajo en el celular, centrada en pantallas anchas */
+dialog.product-dialog {
+  position: fixed;
+  inset: auto 0 0 0;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  max-height: 92dvh;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  overflow: hidden;
+  background: var(--surface);
+  color: var(--ink);
+}
+dialog.product-dialog::backdrop {
+  background: rgb(0 0 0 / 0.5);
+}
+@media (min-width: 768px) {
+  dialog.product-dialog {
+    inset: 0;
+    margin: auto;
+    width: 520px;
+    height: fit-content;
+    max-height: min(92dvh, 760px);
+    border-radius: var(--radius-card);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  dialog.sheet[open],
+  dialog.product-dialog[open] {
+    animation: sheet-in 0.22s ease-out;
+  }
+  .cart-bar-in {
+    animation: bar-in 0.2s ease-out;
+  }
+}
+@keyframes sheet-in {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes bar-in {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/*
+ * Panel de diseño de los juegos escondidos (/admin/juegos): dibujos de píxeles
+ * nítidos, fondo de cuadritos para ver lo transparente, vistas previas con las
+ * letras de píxeles del juego y las ventanas del convertidor y del editor.
+ */
+:root {
+  --checker-a: #ffffff;
+  --checker-b: #e6e0d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --checker-a: #2b2825;
+    --checker-b: #3a3632;
+  }
+}
+:root[data-theme="dark"] {
+  --checker-a: #2b2825;
+  --checker-b: #3a3632;
+}
+.pixelated {
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+.checker {
+  background-color: var(--checker-a);
+  background-image: conic-gradient(var(--checker-b) 25%, transparent 0 50%, var(--checker-b) 0 75%, transparent 0);
+  background-size: calc(var(--checker-size, 8px) * 2) calc(var(--checker-size, 8px) * 2);
+}
+.pixel-preview {
+  --bn-u: 3px;
+  --bn-t: 3px;
+  --bn-l: 2px;
+}
+.pixel-preview .bn-text {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--px) * 5);
+  margin: 0;
+}
+.pixel-preview .bn-text-inline {
+  display: inline-flex;
+  vertical-align: top;
+}
+.pixel-preview .bn-line {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: calc(var(--px) * 4);
+  row-gap: calc(var(--px) * 3);
+}
+.pixel-preview svg {
+  display: block;
+  flex: none;
+  max-width: 100%;
+  overflow: visible;
+  shape-rendering: crispEdges;
+}
+.pixel-preview .bn-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Ventanas del convertidor y del editor: suben desde abajo en el celular, centradas y anchas en el computador. */
+dialog.tool-dialog {
+  position: fixed;
+  inset: auto 0 0 0;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: 100dvh;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: var(--surface);
+  color: var(--ink);
+  overscroll-behavior: contain;
+}
+dialog.tool-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+dialog.tool-dialog::backdrop {
+  background: rgb(0 0 0 / 0.55);
+}
+@media (min-width: 768px) {
+  dialog.tool-dialog {
+    inset: 0;
+    margin: auto;
+    width: min(880px, calc(100vw - 48px));
+    height: fit-content;
+    max-height: min(94dvh, 900px);
+    border-radius: var(--radius-card);
+  }
+}
+
+/*
+ * Impresión (comanda de un pedido): siempre negro sobre blanco, sin importar
+ * el tema, y sin sombras ni fondos de color.
+ */
+@media print {
+  :root,
+  :root[data-theme="dark"],
+  :root:not([data-theme="light"]) {
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --ink: #000000;
+    --ink-muted: #333333;
+    --line: #666666;
+    --brand: #000000;
+    --on-brand: #ffffff;
+    --brand-tint: #ffffff;
+    --accent: #000000;
+    --on-accent: #ffffff;
+    --danger: #000000;
+    color-scheme: light;
+  }
+  html {
+    scrollbar-gutter: auto;
+  }
+  body {
+    background: #ffffff;
+  }
+  @page {
+    margin: 8mm;
+  }
+}
